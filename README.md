@@ -50,7 +50,7 @@ This workspace includes the following packages:
 
 ---
 
-## 🎮 Usage
+## Usage
 
 You will need two terminals for this. **Remember to source your workspace in each new terminal!**
 
