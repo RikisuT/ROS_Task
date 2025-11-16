@@ -1,0 +1,23 @@
+- ros_topic_name: "/clock"
+  gz_topic_name: "/clock"
+  ros_type_name: "rosgraph_msgs/msg/Clock"
+  gz_type_name: "gz.msgs.Clock"
+  direction: GZ_TO_ROS
+
+# 1. Bridge Motor Commands (ROS -> GZ)
+- ros_topic_name: "/drone/motor_speeds"
+  gz_topic_name: "x3/gazebo/command/motor_speed"
+  ros_type_name: "actuator_msgs/msg/Actuators"
+  gz_type_name: "gz.msgs.Actuators"
+  direction: ROS_TO_GZ
+
+# 2. Bridge Drone Pose (GZ -> ROS)
+#    This listens to the new topic from your plugin
+- ros_topic_name: "/tf"
+  gz_topic_name: "model/x3/pose" 
+  ros_type_name: "tf2_msgs/msg/TFMessage"
+  gz_type_name: "gz.msgs.Pose_V"
+  direction: GZ_TO_ROS
+
+
+  
