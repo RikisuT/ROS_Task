@@ -1,26 +1,18 @@
 <launch>
-
-  <let name="pkg_project_bringup" 
-       value="$(find-pkg-share x500_bringup)" />
-  <let name="pkg_project_gazebo" 
-       value="$(find-pkg-share x500_gazebo)" />
-  <let name="pkg_project_description" 
-       value="$(find-pkg-share x500_description)" />
-  <let name="pkg_ros_gz_sim" 
-       value="$(find-pkg-share ros_gz_sim)" />
   <let name="world_file"
-       value="$(var pkg_project_gazebo)/worlds/default.sdf" />
+       value="$(find-pkg-share x500_gazebo)/worlds/default.sdf" />
   <let name="urdf_file"
-       value="$(var pkg_project_description)/models/x500/model.sdf.xacro" />
+       value="$(find-pkg-share x500_description)/models/x500/model.sdf.xacro" />
   <let name="config_file"
-       value="$(var pkg_project_bringup)/config/x500_bridge.yaml" />
+       value="$(find-pkg-share x500_bringup)/config/x500_bridge.yaml" />
   <let name="robot_description" 
        value="$(command 'xacro $(var urdf_file)')" />
-  <include file="$(var pkg_ros_gz_sim)/launch/gz_sim.launch.py">
+       
+  <include file="$(find-pkg-share ros_gz_sim)/launch/gz_sim.launch.py">
     <arg name="gz_args" value="$(var world_file)" />
   </include>
 
-  <include file="$(var pkg_ros_gz_sim)/launch/ros_gz_spawn_model.launch.py">
+  <include file="$(find-pkg-share ros_gz_sim)/launch/ros_gz_spawn_model.launch.py">
     <arg name="bridge_name" value="ros_gz_bridge" />
     <arg name="world" value="default" />
     <arg name="config_file" value="$(var config_file)" />
@@ -36,6 +28,6 @@
   </node>
 
   <node pkg="rviz2" exec="rviz2"
-        args="-d $(var pkg_project_bringup)/config/x500.rviz" />
+        args="-d $(find-pkg-share x500_bringup)/config/x500.rviz" />
   
 </launch>
