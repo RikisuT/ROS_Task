@@ -13,7 +13,7 @@
   <let name="urdf_file"
        value="$(var pkg_project_description)/models/x500/model.sdf.xacro" />
   <let name="config_file"
-       value="$(var pkg_project_description)/models/x500/bridge.yaml" />
+       value="$(var pkg_project_bringup)/config/x500_bridge.yaml" />
   <let name="robot_description" 
        value="$(command 'xacro $(var urdf_file)')" />
   <include file="$(var pkg_ros_gz_sim)/launch/gz_sim.launch.py">
