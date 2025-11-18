@@ -30,7 +30,7 @@ class PIDAltitudeNode(Node):
 
     def odom_callback(self, msg: Odometry):
         self.current_altitude = msg.pose.pose.position.z
-        # self.get_logger().info(f"Altitude update: {self.current_altitude}") # Squelch spam
+        self.get_logger().info(f"Altitude update: {self.current_altitude}") # Squelch spam
 
 
     def pid_update(self):
