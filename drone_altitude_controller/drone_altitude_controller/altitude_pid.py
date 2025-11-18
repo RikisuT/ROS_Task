@@ -17,6 +17,8 @@ class PIDAltitudeNode(Node):
         self.Ki = 40.0
         self.Kd = 100.0
         self.setpoint = 3.0
+        
+        self.base_thrust=500.0
 
         self.current_altitude = 0.0
         self.integral = 0.0
@@ -46,7 +48,7 @@ class PIDAltitudeNode(Node):
         output = self.Kp * error + self.Ki * self.integral + self.Kd * derivative
         self.prev_error = error
 
-        thrust = max(0, min(500 + output, 1000))
+        thrust = max(0, min(self.base_thrust + output, 1000))
         self.motor_cmd = thrust
 
         act = Actuators()
