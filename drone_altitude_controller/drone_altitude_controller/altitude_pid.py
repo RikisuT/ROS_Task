@@ -3,7 +3,6 @@ import rclpy
 from rclpy.node import Node
 from actuator_msgs.msg import Actuators
 from nav_msgs.msg import Odometry
-# QApplication is needed for processEvents
 from PyQt5.QtWidgets import QApplication, QWidget, QSlider, QPushButton, QLabel, QVBoxLayout, QHBoxLayout
 from PyQt5.QtCore import Qt, QTimer
 import numpy as np
@@ -15,7 +14,6 @@ class PIDAltitudeNode(Node):
         self.pub = self.create_publisher(Actuators, '/command/motor_speed', 10)
         self.sub = self.create_subscription(Odometry, '/x500/odom', self.odom_callback, 10)
 
-        # PID params and state
         self.Kp = 100.0
         self.Ki = 40.0
         self.Kd = 100.0
@@ -46,28 +44,21 @@ class PIDAltitudeNode(Node):
             act = Actuators()
             act.velocity = [0.0] * 4
             self.pub.publish(act)
-            # Reset PID state when inactive
             self.integral = 0.0
             self.prev_error = 0.0
             return
 
         error = self.setpoint - self.current_altitude
         self.integral += error * dt
-        # Clamp integral to prevent windup
         self.integral = max(-100.0, min(self.integral, 100.0))
         
         derivative = (error - self.prev_error) / dt
         output = self.Kp * error + self.Ki * self.integral + self.Kd * derivative
         self.prev_error = error
 
-        # Assuming thrust needs to be positive. Adjust as needed.
-        # A base thrust might be needed to hover.
-        # This PID output is an offset from a hover thrust.
-        # For simplicity, let's assume 500 is hover and output is +/-
-        base_hover_thrust = 500.0 # This is a guess, adjust!
+        base_hover_thrust = 500.0 #
         thrust = base_hover_thrust + output
         
-        # Clamp output to a reasonable range
         thrust = max(0.0, min(thrust, 1000.0))
         self.motor_cmd = thrust
 
@@ -155,7 +146,6 @@ class PIDAltitudeGUI(QWidget):
         self.status_label.setStyleSheet("font-weight: bold; color: red")
 
     def update_ui(self):
-        # Only spin and update if auto-tuning isn't running
         if "AUTO-TUNING" not in self.status_label.text():
             rclpy.spin_once(self.node, timeout_sec=0)
             self.node.pid_update()
@@ -163,7 +153,6 @@ class PIDAltitudeGUI(QWidget):
         self.altitude_label.setText(f"Current Altitude: {self.node.current_altitude:.2f} m")
         self.motor_label.setText(f"Current Motor Cmd: {self.node.motor_cmd:.2f} rad/s")
         
-        # Update slider labels in case values were changed by auto-tune
         self.kp_label.setText(f"Kp: {self.node.Kp:.2f}")
         self.kp_slider.setValue(int(self.node.Kp * 100))
         self.ki_label.setText(f"Ki: {self.node.Ki:.2f}")
@@ -175,13 +164,6 @@ class PIDAltitudeGUI(QWidget):
 def main():
     rclpy.init()
     pid_node = PIDAltitudeNode()
-    
-    # Spin the node in a background thread
-    # This is not strictly necessary for this app, but good practice
-    # import threading
-    # spin_thread = threading.Thread(target=rclpy.spin, args=(pid_node,))
-    # spin_thread.daemon = True
-    # spin_thread.start()
     
     app = QApplication(sys.argv)
     gui = PIDAltitudeGUI(pid_node)
